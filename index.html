@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-	    <title>E.coli Protein Coevolution Map</title>
+	    <title>E.coli Protein Coevolution Network</title>
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	    <meta charset="utf-8">
 	    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css" media="screen">
 	    <link rel="stylesheet" href="css/font-awesome.min.css">
 	    <link rel="stylesheet" href="css/bootswatch.min.css">
+	    <link rel="stylesheet" href="css/graph.css">
 	    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	    <!--[if lt IE 9]>
 	      <script src="../bower_components/bootstrap/assets/js/html5shiv.js"></script>
@@ -31,6 +32,7 @@
 			.cntainr{
 				height:100%;
   				width:100%;
+				display:table;
 			}
 		</style>
 	</head>
@@ -38,24 +40,52 @@
 		<div class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<a href="./index.html" class="navbar-brand">CoLiEvolution</a>
+					<a href="./index.html" class="navbar-brand">CoLiEvolution Network</a>
+				</div>
+			</div>
+		</div>		
+		<div class="cntainr" id="loadingCon">
+			<div class="loadingbox" style="height:100%;display:table-cell;vertical-align:middle;">
+				<div style="float:none;margin:0 auto;">
+					<div style="width:600px;margin:0 auto;">
+						<div class="jumbotron" style="margin:0 auto;float:none;">
+			                <h3><em>E.coli</em> Protein Coevolution Network</h3>
+			                <p>Simulating Layout. One moment please...</p>
+							<div class="progressBar">
+							    <div class="progress progress-striped active">
+							        <div class="bar" style="width: 0%;"></div>
+							    </div>
+							</div>
+						</div>						
+					</div>
 				</div>
 			</div>
 		</div>
-		
-		<div class="cntainr">
-			<div id="network-view" style="height:100%;width:100%"></div>
-			
-			<!-- <div class="page-header" id="banner">
-				<div class="row">
-					<div class="col-lg-6">
-						<h1>CoLiEvolution</h1>
-						<p class="lead">E.coli Coevolutionary Network</p>
-					</div>
-				</div>
-			</div> -->
+		<div class="cntainr" id="netCon">
+			<div id="network-view" style="height:100%;width:100%"></div>				
 		</div>
-				
+		<div id="pop-up-node" class="pop-up">
+			<div class="pop-up-title" id="node-title"></div>
+		          <div class="pop-up-content">
+					  <div class="pop-img" id="nodename"></div>
+					  <div class="pop-img" id="uniprot"></div>
+					  <div class="pop-img" id="gofun"></div>
+					  <div class="pop-img" id="gofundesc"></div>
+					  <div class="pop-img" id="gofunpval"></div>
+		          </div>
+		      </div>
+		</div>
+		<div id="pop-up-link" class="pop-up">
+		          <div class="pop-up-title" id="link-title"></div>
+		          <div class="pop-up-content">
+					  <div class="pop-img" id="orthologs"></div>
+					  <div class="pop-img" id="mt"></div>
+					  <div class="pop-img" id="pMT"></div>
+					  <div class="pop-img" id="context"></div>
+		          </div>
+		      </div>
+		</div>
+		
 	    <script src="bootstrap/dist/js/bootstrap.min.js"></script>
 	    <script src="js/bootswatch.js"></script>
 		<script src="js/d3.v3.js"></script>
