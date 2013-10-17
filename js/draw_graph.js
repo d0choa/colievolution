@@ -41,7 +41,8 @@
  	var rect = vis.append('svg:rect')
  	    .attr('width', width)
  	    .attr('height', height)
- 	    .attr('fill', 'white');	
+ 	    .attr('fill', 'white')
+		.on("click", function(){$(".pop-up").fadeOut(50)});
 	
 	function redraw() {
         $(".pop-up").fadeOut(50);
@@ -133,18 +134,18 @@
 				previousd = d.name;
 		        $("#pop-up-node").fadeOut(100,function () {
 		            // Popup content
-		            $("#node-title").html("Protein: " + d.main + " (" + d.name + ")");
-		            $("#nodename").html("Name: "+ d.Protein_names);
-		            $("#uniprot").html("Uniprot: "+ d.Entry);
-		            $("#gofun").html("Enriched Function: "+ d.GO_ref);
-		            $("#gofundesc").html("GO description: " + d.GOref_description);
+		            $("#node-title").html(d.main + " (" + d.name + ")");
+		            $("#nodename").html(d.Protein_names);
+		            $("#uniprot").html(d.Entry);
+		            $("#gofun").html(d.GO_ref);
+		            $("#gofundesc").html(d.GOref_description);
 					var enrichpval;
 					if(d.reference_pval == "NA"){
 						enrichpval="NA"
 					}else{
 						enrichpval=parseFloat(d.reference_pval.toPrecision(5));
 					}
-					$("#gofunpval").html("Enrichment P-value: "+ enrichpval) ;
+					$("#gofunpval").html(enrichpval) ;
 					
 		            // $("#pop-desc").html("M+T: text text test");
 
@@ -167,16 +168,47 @@
 		        $("#pop-up-link").fadeOut(100,function () {
 		            // Popup content
 		            $("#link-title").html("Interaction: " + d.name);
-					$("#orthologs").html("Orthologs in common: "+ d.n);
-					$("#mt").html("Mirrortree: "+ Math.round(d.r).toFixed(5));			
+					$("#orthologs").html(d.n);
+					$("#mt").html(Math.round(d.r).toFixed(5));			
 					var pval;
 					if(d.p_value == 0){
 						pval="< 1E-3";
 					}else{
 						pval=d.p_value;
 					}
-					$("#pMT").html("p-mirrortree P-value: "+ pval);
-					$("#context").html("ContextMirror (level 10): "+ d.context_lvl10);
+					$("#pMT").html(pval);
+					$("#context").html(d.context_lvl10);
+					var binary,complex,kpath,ecopath,reg;
+					if(d.binary_physical == "NA"){
+						binary="&#10008";
+					}else{
+						binary="&#10004";
+					}
+					if(d.ecocyc_complexes == "NA"){
+						complex="&#10008";
+					}else{
+						complex="&#10004";
+					}
+					if(d.kegg_pathways == "NA"){
+						kpath="&#10008";
+					}else{
+						kpath="&#10004";
+					}
+					if(d.ecocyc_pathways == "NA"){
+						ecopath="&#10008";
+					}else{
+						ecopath="&#10004";
+					}
+					if(d.ecocyc_regulation == "NA"){
+						reg="&#10008";
+					}else{
+						reg="&#10004";
+					}
+					$("#binary_physical").html(binary);
+					$("#ecocyc_complexes").html(complex);
+					$("#kegg_pathways").html(kpath);
+					$("#ecocyc_pathways").html(ecopath);
+					$("#ecocyc_regulation").html(reg);
 					
 		            // Popup position
 		            var popLeft = (((d.source.x + d.target.x)/2)*scale)+trans[0]+20;//lE.cL[0] + 20;

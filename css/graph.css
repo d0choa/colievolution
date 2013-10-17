@@ -22,9 +22,11 @@ div.pop-up-title {
 div.pop-up-content {
 	font-size: 12px;
 }
+.minititle{
+	font-weight: bolder;
+}
 div.pop-img {
 	font-size: 12px;
-	font-weight: bolder;
 }
 div.pop-desc {
 	width: 150px;
