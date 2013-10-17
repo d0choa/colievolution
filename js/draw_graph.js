@@ -4,6 +4,7 @@
  *
  * @type {string}
  */
+
 (function () {
     "use strict";
 
@@ -13,47 +14,49 @@
     var NETWORK_LOCAL_DATA_URI = 'data/netJSON.min.d3';
 //    var VISUAL_STYLE_URI = 'data/vs.json';
     var NETWORK_WINDOW_TAG = "#network-view";
-	
-	var n = 8;
+		
+	var n = 6;
 	var r = 5;
-    var trans=[0,0]
-    var scale=1;
+	    var trans=[0,0]
+	    var scale=1;
 	var width = $(NETWORK_WINDOW_TAG).width(),
 	    height = $(NETWORK_WINDOW_TAG).height();
 	var color = d3.scale.category20();	
 	var previousd;
+	var counter=0;
 	
 	var vis = d3.select(NETWORK_WINDOW_TAG)
 		.append("svg")
-        	.attr("id", "playgraph")
+	        	.attr("id", "playgraph")
 	        .attr({
 	          "width": width,
 	          "height": height
 	        })
-        	.attr("viewBox", "0 0 " + width + " " + height )
-        	.attr("preserveAspectRatio", "xMidYMid meet")
+	        	.attr("viewBox", "0 0 " + width + " " + height )
+	        	.attr("preserveAspectRatio", "xMidYMid meet")
 		    .attr("pointer-events", "all")
 	  	 .append('svg:g')
- 	    	.call(d3.behavior.zoom().on("zoom", redraw))
+	 	    	.call(d3.behavior.zoom().on("zoom", redraw))
 	  	 .append('svg:g')
 		 
 	
- 	var rect = vis.append('svg:rect')
- 	    .attr('width', width)
- 	    .attr('height', height)
- 	    .attr('fill', 'white')
+	 	var rect = vis.append('svg:rect')
+	 	    .attr('width', width)
+	 	    .attr('height', height)
+	 	    .attr('fill', 'white')
 		.on("click", function(){$(".pop-up").fadeOut(50);previousd=""});
 	
 	function redraw() {
-        $(".pop-up").fadeOut(50);
+	        $(".pop-up").fadeOut(50);
 		previousd="";
 		trans=d3.event.translate;
 		scale=d3.event.scale;
-
+	
 		vis.attr("transform","translate(" + trans + ")"+" scale(" + scale + ")");
 	}
-		
+	
 	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
+		
 		var force = d3.layout.force()
 	        // .charge(-120)
 	        // .linkDistance(30)
@@ -61,7 +64,6 @@
 			.nodes(graph.nodes)
 		    .size([width, height]);
 	  	      	//.start();	
-	    
 		var link = vis.selectAll("line.link")
 	        .data(graph.links)
 	        .enter().append("svg:line")
@@ -115,6 +117,24 @@
 	  	      .text(function(d) { return d.main; });
 		
 		force.on("tick", tick);
+		force.on("start", loading);
+		
+		
+		function loading(){
+			var interval;
+			interval = setInterval(function() {
+				console.log(counter);
+				force.tick();
+				$('.progress-bar').attr('aria-valuetransitiongoal', counter).progressbar();
+				counter++;
+				if((counter-1) == (n*n)){
+					clearInterval(interval);
+					console.log("end");
+					$("#loadingCon").fadeOut();
+			  		force.stop();
+				}
+			}, 20);
+		}
 		
 		function tick(){
 	  		  // Update the links
@@ -128,6 +148,7 @@
 	  		    return 'translate(' + [d.x, d.y] + ')'; 
 				});				
 		}
+		
 	    function mover(d,i) {
 	        $(".pop-up").fadeOut(50);
 			if(d.name != previousd){
@@ -148,7 +169,7 @@
 					$("#gofunpval").html(enrichpval) ;
 					
 		            // $("#pop-desc").html("M+T: text text test");
-
+	
 		            // Popup position
 		            var popLeft = (d.x*scale)+trans[0]+20;//lE.cL[0] + 20;
 		            var popTop = (d.y*scale)+trans[1]+20;//lE.cL[1] + 70;
@@ -219,34 +240,68 @@
 			}else{
 				previousd = "";
 			}
-	    }
+	    }		
 		
-	    // function mout(d) {
-	    //     //d3.select(this).attr("fill","url(#ten1)");
-	    // }
 	  	setTimeout(function() {
 	  		  // Run the layout a fixed number of times.
 	  		  // The ideal number of times scales with graph complexity.
 	  		  // Of course, don't run too long—you'll hang the page!
-	  		  force.start();
-	  		  for (var i = n * n; i > 0; --i) force.tick();
-	  		  force.stop();
-			  			  
-	  		  // vis.selectAll("line")
-	  		  //     .data(link)
-	  		  //   .enter().append("line")
-	  		  //     .attr("x1", function(d) { return d.source.x; })
-	  		  //     .attr("y1", function(d) { return d.source.y; })
-	  		  //     .attr("x2", function(d) { return d.target.x; })
-	  		  //     .attr("y2", function(d) { return d.target.y; });
-	  		  // vis.selectAll("circle")
-	  		  //     .data(node)
-	  		  //   .enter().append("circle")
-	  		  //     .attr("cx", function(d) { return d.x; })
-	  		  //     .attr("cy", function(d) { return d.y; })
-			  $("#loadingCon").fadeOut();
-	  		}, 10);	
-			console.log( document.getElementsByTagName('*').length )	  
+  			  force.start();
+			  
+			  force.loading();
+				// 			  for(counter=0;counter <= (n*n);counter++){
+				// force.tick();
+				// console.log(counter);
+				//   
+				//   (function(force){
+				// 	  setTimeout(function(){
+				// 	},5000)
+				//   }(force))
+				// 			  }
+				// 	  	  	$('.progress-bar').attr('aria-valuetransitiongoal', counter).progressbar();
+			  // 
+			  // 					  
+			  // }
+			  
+			  // (function(){
+			  // 				  var interval;
+			  // 				  interval = setInterval(function() {
+			  // 				  				  console.log(counter);
+			  // 				  				  force.tick();
+			  // 				                    $('.progress-bar').attr('aria-valuetransitiongoal', counter).progressbar();
+			  // 				  				  counter++;
+			  // 				  				  if((counter-1) == (n*n)){
+			  // 				  					  clearInterval(interval);
+			  // 				  					  $("#loadingCon").fadeOut();
+			  // 				  				  }
+			  // 				  }, 500);
+			  // }(force))
+			   
+			  				  
+			  // (function asyncLoop() {
+			  // 				  counter++;
+			  // 				  force.tick();
+			  //     if (counter <= (n*n)) {
+			  // 					  console.log(counter);
+			  //         asyncLoop();
+			  //     }
+			  // })();
+	  		  // for (var i = n * n; i > 0; --i) force.tick();
+	  		force.stop();
+			   
+	  		  vis.selectAll("line")
+	  		      .data(link)
+	  		    .enter().append("line")
+	  		      .attr("x1", function(d) { return d.source.x; })
+	  		      .attr("y1", function(d) { return d.source.y; })
+	  		      .attr("x2", function(d) { return d.target.x; })
+	  		      .attr("y2", function(d) { return d.target.y; });
+	  		  vis.selectAll("circle")
+	  		      .data(node)
+	  		    .enter().append("circle")
+	  		      .attr("cx", function(d) { return d.x; })
+	  		      .attr("cy", function(d) { return d.y; })
+	  		}, 10);
 	});
 	
 }).call(this);
