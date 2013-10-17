@@ -42,7 +42,7 @@
  	    .attr('width', width)
  	    .attr('height', height)
  	    .attr('fill', 'white')
-		.on("click", function(){$(".pop-up").fadeOut(50)};previousd="");
+		.on("click", function(){$(".pop-up").fadeOut(50);previousd=""});
 	
 	function redraw() {
         $(".pop-up").fadeOut(50);
