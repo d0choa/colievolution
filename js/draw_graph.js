@@ -149,7 +149,12 @@
 				});				
 		}
 		
-	    function mover(d,i) {
+		function searchNode(nodeName){
+			var selnodes = d3.selectAll("gnodes[main='" + nodeName + "']");
+			
+		}
+	    
+		function mover(d,i) {
 	        $(".pop-up").fadeOut(50);
 			if(d.name != previousd){
 				previousd = d.name;
