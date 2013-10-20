@@ -140,8 +140,26 @@
 				return "translate(" + d.x + "," + d.y + ")";
 			});			  
 		}
-					
-	    function mover(d,i) {
+		
+		function tick(){
+	  		  // Update the links
+	  		  link.attr("x1", function(d) { return d.source.x; })
+	  		    .attr("y1", function(d) { return d.source.y; })
+	  		    .attr("x2", function(d) { return d.target.x; })
+	  		    .attr("y2", function(d) { return d.target.y; });
+								
+	  		  // Translate the groups
+	  		  gnodes.attr("transform", function(d) { 
+	  		    return 'translate(' + [d.x, d.y] + ')'; 
+				});				
+		}
+		
+		function searchNode(nodeName){
+			var selnodes = d3.selectAll("gnodes[main='" + nodeName + "']");
+			
+		}
+	    
+		function mover(d,i) {
 	        $(".pop-up").fadeOut(50);
 			if(d.name != previousd){
 				previousd = d.name;
