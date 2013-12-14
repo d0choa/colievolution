@@ -8,7 +8,7 @@
 // (function () {
     "use strict";
 
-    var NETWORK_LOCAL_DATA_URI = 'data/netJSON.lay.d3';
+    var NETWORK_LOCAL_DATA_URI = 'data/net2.json';
     var NETWORK_WINDOW_TAG = "#network-view";
 
 	var n = 6;
@@ -228,7 +228,6 @@
 		  // Of course, don't run too long—you'll hang the page!
 		   
 		  vis.selectAll("line")
-		  	  .attr("fixed", true)
 		      .attr("x1", function(d) { return d.source.x; })
 		      .attr("y1", function(d) { return d.source.y; })
 		      .attr("x2", function(d) { return d.target.x; })
@@ -238,8 +237,10 @@
   				return 'translate(' + [d.x, d.y] + ')'; 
   			});
 			
-  		  force.start();
-				
+			force.start();
+			tick();
+			force.stop() // stops the force auto positioning before you start dragging
+		  
 			$("#loadingCon").fadeOut();
 			
 		  // svg.selectAll("circle")
