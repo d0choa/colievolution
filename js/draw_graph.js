@@ -145,15 +145,7 @@
 			var selnodes = d3.selectAll("gnodes[main='" + nodeName + "']");
 			
 		}
-<<<<<<< HEAD
-=======
-		
-		function searchNode(nodeName){
-			var selnodes = d3.selectAll("gnodes[main='" + nodeName + "']");
-			
-		}
->>>>>>> a530b91d8da752eb0f785148189f718e259d87ef
-	    
+			    
 		function mover(d,i) {
 	        $(".pop-up").fadeOut(50);
 			if(d.name != previousd){
