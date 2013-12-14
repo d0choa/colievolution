@@ -11,12 +11,17 @@
     var NETWORK_LOCAL_DATA_URI = 'data/net2.json';
     var NETWORK_WINDOW_TAG = "#network-view";
 
+	var w = window,
+		d = document,
+		e = d.documentElement,
+		g = $(NETWORK_WINDOW_TAG),
+		thewidth = w.innerWidth|| e.clientWidth || g.clientWidth,
+		theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
+
 	var n = 6;
 	var r = 5;
     var trans=[0,0]
     var scale=1;
-	var width = $(NETWORK_WINDOW_TAG).width(),
-	    height = $(NETWORK_WINDOW_TAG).height();
 	var color = d3.scale.category20();	
 	var previousd;
 	var counter=0;
@@ -24,11 +29,11 @@
 	var vis = d3.select(NETWORK_WINDOW_TAG)
 		.append("svg")
 		.attr("id", "playgraph")
-		.attr({
-			"width": width,
-			"height": height
-		})
-		.attr("viewBox", "0 0 " + width + " " + height)
+		// .attr({
+		// 	"width": thewidth,
+		// 	"height": theheight
+		// })
+		.attr("viewBox", "0 0 " + thewidth + " " + theheight)
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.attr("pointer-events", "all")
 		.append('svg:g')
@@ -37,8 +42,8 @@
 		 
 	
 	var rect = vis.append('svg:rect')
-		.attr('width', width)
-		.attr('height', height)
+		.attr('width', thewidth)
+		.attr('height', theheight)
 		.attr('fill', 'white')
 		.on("click", function(){$(".pop-up").fadeOut(50);previousd=""});	
 	
@@ -51,6 +56,15 @@
 		vis.attr("transform","translate(" + trans + ")"+" scale(" + scale + ")");
 	}
 	
+	function updateWindow(){
+		thewidth = w.innerWidth || e.clientWidth || g.clientWidth;
+		theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
+		vis.attr("width", thewidth).attr("height", theheight);
+		rect.attr("width", thewidth).attr("height", theheight);
+	}
+	
+	$(window).on("resize", function() {updateWindow()}).trigger("resize");
+	
 	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
 		
 		var force = d3.layout.force()
@@ -58,7 +72,7 @@
 	        // .linkDistance(30)
 			.links(graph.links)
 			.nodes(graph.nodes)
-		    .size([width, height])
+		    .size([thewidth, theheight])
 			
 		var link = vis.selectAll(".link")
 	        .data(graph.links)
