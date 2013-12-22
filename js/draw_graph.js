@@ -45,7 +45,12 @@
 		.attr('width', thewidth)
 		.attr('height', theheight)
 		.attr('fill', 'white')
-		.on("click", function(){$(".pop-up").fadeOut(50);previousd=""});	
+		.on("click", function(){
+			$(".pop-up").fadeOut(50);
+			previousd="";
+			d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
+			d3.selectAll('[highlighted=true]').attr("highlighted",false);
+		});	
 	
 	function redraw(){
 		$(".pop-up").fadeOut(50);
@@ -64,6 +69,21 @@
 	}
 	
 	$(window).on("resize", function() {updateWindow()}).trigger("resize");
+	
+	$(".navbar-form").submit(function(e){
+	    e.preventDefault();
+		searchNode($("#srch-term").val());
+	  });
+	
+	function searchNode(nodeName){
+		// deletee previous
+		d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
+		d3.selectAll('[highlighted=true]').attr("highlighted",false);
+		//mark this
+		d3.selectAll('.node[main='+nodeName+']').style("fill","yellow");
+		d3.selectAll('.node[main='+nodeName+']').attr("highlighted",true);
+				
+	}
 	
 	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
 		
@@ -99,7 +119,7 @@
 		}
 	
 		function dragend(d, i) {
-		    d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+		    // d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
 		    tick();
 		}
 		
@@ -114,6 +134,7 @@
 			.attr("class", "node")
 			.attr("r", r - .5)
 			// .on ("mouseout",mout)
+			.attr('main', function(d) {return d.main})
 	        .style("stroke", function(d) { return d3.rgb(color(d.GO_ref)).darker(); })
 	        .style("stroke-width", 0.5)
 			.style("fill", function(d) { return color(d.GO_ref); });
@@ -140,12 +161,7 @@
 				return "translate(" + d.x + "," + d.y + ")";
 			});			  
 		}
-				
-		function searchNode(nodeName){
-			var selnodes = d3.selectAll("gnodes[main='" + nodeName + "']");
-			
-		}
-			    
+							    
 		function mover(d,i) {
 	        $(".pop-up").fadeOut(50);
 			if(d.name != previousd){
