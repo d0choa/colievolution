@@ -59,7 +59,6 @@
 		previousd="";
 		trans=d3.event.translate;
 		scale=d3.event.scale;
-		console.log(trans);
 		
 		// vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
 		
@@ -77,17 +76,25 @@
 	
 	$(".navbar-form").submit(function(e){
 	    e.preventDefault();
-		searchNode($("#srch-term").val());
+		focusOnNode($("#srch-term").val());
 	  });
+	  
+	 $("#srch-term").keyup(function() {
+         var val = $.trim(this.value);
+		 searchNodes(val);
+     });
 	
-	function searchNode(nodeName){
+	function searchNodes(nodeNames){
 		// deletee previous
 		d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
 		d3.selectAll('[highlighted=true]').attr("highlighted",false);
 		//mark this
-		d3.selectAll('.node[main='+nodeName+']').style("fill","yellow");
-		d3.selectAll('.node[main='+nodeName+']').attr("highlighted",true);
-				
+		d3.selectAll('.node[main^='+nodeNames+']').style("fill","yellow");
+		d3.selectAll('.node[main^='+nodeNames+']').attr("highlighted",true);
+	}
+	
+	function focusOnNode(nodeName){
+		
 	}
 	
 	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
@@ -285,17 +292,6 @@
     		});
  			centerx = allxs/counter;
 			centery = allys/counter;
-			console.log(centerx+" "+centery);
-			console.log(thewidth/2 +" "+ theheight/2);
-			
-  			// gnodes.attr("transform", function(d) { 
-  			// 	return 'translate(' + [d.x, d.y] + ')'; 
-  			// });
-									
-  			// gnodes.attr("transform", function(d) { 
-  			// 	return 'translate(' + [d.x, d.y] + ')'; 
-  			// });
-			
 			
 			force.start();
 			tick();
