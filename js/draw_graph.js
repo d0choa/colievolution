@@ -84,6 +84,10 @@
 		 searchNodes(val);
      });
 	
+	 $("#srch-term").autocomplete({
+	       source: availableTags
+	   });
+	
 	function searchNodes(nodeNames){
 		// deletee previous
 		d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
