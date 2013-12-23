@@ -88,9 +88,12 @@
 		// deletee previous
 		d3.selectAll('[highlighted=true]').style("fill", function(d) { return color(d.GO_ref); });
 		d3.selectAll('[highlighted=true]').attr("highlighted",false);
-		//mark this
-		d3.selectAll('.node[main^='+nodeNames+']').style("fill","yellow");
-		d3.selectAll('.node[main^='+nodeNames+']').attr("highlighted",true);
+		
+		if(nodeNames != ''){
+			//mark this
+			d3.selectAll('.node[main^='+nodeNames+']').style("fill","yellow");
+			d3.selectAll('.node[main^='+nodeNames+']').attr("highlighted",true);
+		}
 	}
 	
 	function focusOnNode(nodeName){
