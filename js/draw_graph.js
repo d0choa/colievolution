@@ -25,6 +25,8 @@
 	var color = d3.scale.category20();	
 	var previousd;
 	var counter=0;
+	var centerx;
+	var centery;
 	
 	var vis = d3.select(NETWORK_WINDOW_TAG)
 		.append("svg")
@@ -57,8 +59,11 @@
 		previousd="";
 		trans=d3.event.translate;
 		scale=d3.event.scale;
-
-		vis.attr("transform","translate(" + trans + ")"+" scale(" + scale + ")");
+		console.log(trans);
+		
+		// vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
+		
+		vis.attr("transform","translate(" + [thewidth/2 - centerx + trans[0], theheight/2 - centery + trans[1]] + ")"+" scale(" + scale + ")");
 	}
 	
 	function updateWindow(){
@@ -183,9 +188,11 @@
 					
 		            // $("#pop-desc").html("M+T: text text test");
 	
+					vis.attr("transform","translate(" + [thewidth/2 - centerx + trans[0], theheight/2 - centery + trans[1]] + ")"+" scale(" + scale + ")");
+	
 		            // Popup position
-		            var popLeft = (d.x*scale)+trans[0]+20;//lE.cL[0] + 20;
-		            var popTop = (d.y*scale)+trans[1]+20;//lE.cL[1] + 70;
+		            var popLeft = (d.x*scale) + thewidth/2 - centerx + trans[0];//lE.cL[0] + 20;
+		            var popTop = (d.y*scale) + theheight/2 - centery + trans[1];//lE.cL[1] + 70;
 		            $("#pop-up-node").css({"left":popLeft,"top":popTop});
 		            $("#pop-up-node").fadeIn(100);
 		        });
@@ -261,21 +268,41 @@
 		  // Run the layout a fixed number of times.
 		  // The ideal number of times scales with graph complexity.
 		  // Of course, don't run too long—you'll hang the page!
-		   
+		  
 		  vis.selectAll("line")
 		      .attr("x1", function(d) { return d.source.x; })
 		      .attr("y1", function(d) { return d.source.y; })
 		      .attr("x2", function(d) { return d.target.x; })
 		      .attr("y2", function(d) { return d.target.y; });
- 			 
-  			gnodes.attr("transform", function(d) { 
-  				return 'translate(' + [d.x, d.y] + ')'; 
-  			});
+    		
+			var allxs=0;
+			var counter=0;
+			var allys=0;
+			gnodes.attr("transform", function(d) { 
+				allxs = allxs + d.x;
+				allys = allys + d.y;
+				counter++;
+    		});
+ 			centerx = allxs/counter;
+			centery = allys/counter;
+			console.log(centerx+" "+centery);
+			console.log(thewidth/2 +" "+ theheight/2);
+			
+  			// gnodes.attr("transform", function(d) { 
+  			// 	return 'translate(' + [d.x, d.y] + ')'; 
+  			// });
+									
+  			// gnodes.attr("transform", function(d) { 
+  			// 	return 'translate(' + [d.x, d.y] + ')'; 
+  			// });
+			
 			
 			force.start();
 			tick();
 			force.stop() // stops the force auto positioning before you start dragging
-		  
+		  	
+			vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
+					  
 			$("#loadingCon").fadeOut();
 			
 		  // svg.selectAll("circle")
