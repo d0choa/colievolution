@@ -75,18 +75,31 @@
 	$(window).on("resize", function() {updateWindow()}).trigger("resize");
 	
 	$(".navbar-form").submit(function(e){
-	    e.preventDefault();
+		e.preventDefault();
 		focusOnNode($("#srch-term").val());
-	  });
+	});
 	  
-	 $("#srch-term").keyup(function() {
-         var val = $.trim(this.value);
-		 searchNodes(val);
-     });
+	$("#srch-term").keyup(function() {
+		var val = $.trim(this.value);
+		searchNodes(val);
+	});
 	
-	 $("#srch-term").autocomplete({
-	       source: availableTags
-	   });
+	$('#srch-term').on('change', function (e) {
+		var val = $.trim($('#srch-term').val());
+		searchNodes(val);
+	})
+	
+	$('#srch-term').typeahead({
+		prefetch: 'data/nodes.json',
+	    template: [
+			'<div>',
+			'<p class="repo-language">{{tokens}}</p>',
+			'<p class="repo-name">{{value}}</p>',                                                                    
+			'</div>',
+			'<p class="repo-description">{{description}}</p>'                         
+	    ].join(''),
+		engine: Hogan
+	});
 	
 	function searchNodes(nodeNames){
 		// deletee previous
