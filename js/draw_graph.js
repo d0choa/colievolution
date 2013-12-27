@@ -38,9 +38,9 @@
 		.attr("viewBox", "0 0 " + thewidth + " " + theheight)
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.attr("pointer-events", "all")
-		.append('svg:g')
 		.call(d3.behavior.zoom().on("zoom", redraw))
 		.append('svg:g')
+		// .append('svg:g')
 		 
 	
 	var rect = vis.append('svg:rect')
