@@ -313,6 +313,28 @@
  			centerx = allxs/counter;
 			centery = allys/counter;
 			
+			var minx=0;
+			var maxx=0;
+			var miny=0;
+			var maxy=0;
+			gnodes.attr("transform", function(d) { 
+				if(minx > d.x){
+					minx = d.x
+				}
+				if(maxx < d.x){
+					maxx = d.x
+				}
+				if(miny > d.y){
+					miny = d.y
+				}
+				if(maxy < d.y){
+					maxy = d.y
+				}
+    		});
+			rect.attr('width', (Math.abs(minx) + Math.abs(maxx)))
+			rect.attr('height', (Math.abs(miny) + Math.abs(maxy)))
+			rect.attr("transform","translate(" + [minx, miny] + ")"+" scale(" + scale + ")");
+			
 			force.start();
 			tick();
 			force.stop() // stops the force auto positioning before you start dragging
