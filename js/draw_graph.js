@@ -20,13 +20,14 @@
 
 	var n = 6;
 	var r = 5;
-    var trans=[0,0]
+    var trans=[0,0];
     var scale=1;
 	var color = d3.scale.category20();	
 	var previousd;
 	var counter=0;
 	var centerx;
 	var centery;
+	var zoom = d3.behavior.zoom();
 	
 	var vis = d3.select(NETWORK_WINDOW_TAG)
 		.append("svg")
@@ -38,7 +39,7 @@
 		.attr("viewBox", "0 0 " + thewidth + " " + theheight)
 		.attr("preserveAspectRatio", "xMidYMid meet")
 		.attr("pointer-events", "all")
-		.call(d3.behavior.zoom().on("zoom", redraw))
+		.call(zoom.on("zoom", redraw))
 		.append('svg:g')
 		// .append('svg:g')
 		 
@@ -58,11 +59,8 @@
 		$(".pop-up").fadeOut(50);
 		previousd="";
 		trans=d3.event.translate;
-		scale=d3.event.scale;
-		
-		// vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
-		
-		vis.attr("transform","translate(" + [thewidth/2 - centerx + trans[0], theheight/2 - centery + trans[1]] + ")"+" scale(" + scale + ")");
+		scale=d3.event.scale;		
+		vis.attr("transform","translate(" + [thewidth/2 + trans[0] - centerx, theheight/2 + trans[1] - centery] + ")"+" scale(" + scale + ")");
 	}
 	
 	function updateWindow(){
@@ -114,7 +112,16 @@
 	}
 	
 	function focusOnNode(nodeName){
-		
+		d3.selectAll('.node[main^='+nodeName+']').attr("transform",
+			function(d) {
+				// trans=[Math.abs(d.x)*scale,Math.abs(d.y)*scale];
+				trans=[d.x*scale,d.y*scale];
+				zoom.translate([thewidth/2 - trans[0] - (thewidth/2 - centerx),theheight/2 - trans[1] - (theheight/2 - centery)])
+				zoom.scale(scale);
+		})
+		vis.transition()
+			.duration(1000)
+			.attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
 	}
 	
 	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
@@ -215,7 +222,7 @@
 					
 		            // $("#pop-desc").html("M+T: text text test");
 	
-					vis.attr("transform","translate(" + [thewidth/2 - centerx + trans[0], theheight/2 - centery + trans[1]] + ")"+" scale(" + scale + ")");
+					// vis.attr("transform","translate(" + [thewidth/2 - centerx + trans[0], theheight/2 - centery + trans[1]] + ")"+" scale(" + scale + ")");
 	
 		            // Popup position
 		            var popLeft = (d.x*scale) + thewidth/2 - centerx + trans[0];//lE.cL[0] + 20;
@@ -340,7 +347,7 @@
 			force.stop() // stops the force auto positioning before you start dragging
 		  	
 			vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
-					  
+				  
 			$("#loadingCon").fadeOut();
 			
 		  // svg.selectAll("circle")
