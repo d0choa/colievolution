@@ -299,7 +299,9 @@
 			}else{
 				previousd = "";
 			}
-	    }		
+	    }
+		
+		$('.progress-bar').attr('aria-valuetransitiongoal', 100).progressbar();	  
 		
 		// Use a timeout to allow the rest of the page to load first.
 		setTimeout(function() {
@@ -352,7 +354,6 @@
 			force.stop() // stops the force auto positioning before you start dragging
 		  	
 			vis.attr("transform","translate("+[thewidth/2 - centerx, theheight/2 - centery]+")");
-				  
 			$("#loadingCon").fadeOut();
 			
 		  // svg.selectAll("circle")
