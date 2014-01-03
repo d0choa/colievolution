@@ -290,9 +290,9 @@
 					$("#ecocyc_pathways").html(ecopath);
 					$("#ecocyc_regulation").html(reg);
 					
-		            // Popup position
-		            var popLeft = (((d.source.x + d.target.x)/2)*scale)+trans[0]+20;//lE.cL[0] + 20;
-		            var popTop = (((d.source.y + d.target.y)/2)*scale)+trans[1]+20;//lE.cL[1] + 70;
+		            // Popup position					
+		            var popLeft = (((d.source.x + d.target.x)/2)*scale)+thewidth/2-centerx+trans[0];//lE.cL[0] + 20;
+		            var popTop = (((d.source.y + d.target.y)/2)*scale)+theheight/2-centery+trans[1]+20;//lE.cL[1] + 70;
 		            $("#pop-up-link").css({"left":popLeft,"top":popTop});
 		            $("#pop-up-link").fadeIn(100);
 		        });
