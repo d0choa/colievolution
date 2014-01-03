@@ -5,65 +5,55 @@
  * @type {string}
  */
 
-// (function () {
+(function () {
     "use strict";
 
-    var NETWORK_LOCAL_DATA_URI = 'data/net2.json';
+    // var NETWORK_DATA_URI = 'http://localhost:9988/v1/networks/views';
+//    var NETWORK_LOCAL_DATA_URI = 'data/galFiltered2.json';
+    // var VISUAL_STYLE_URI = 'data/vs.json';
+    var NETWORK_LOCAL_DATA_URI = 'data/netJSON.min.d3';
+//    var VISUAL_STYLE_URI = 'data/vs.json';
     var NETWORK_WINDOW_TAG = "#network-view";
-
-	var w = window,
-		d = document,
-		e = d.documentElement,
-		g = $(NETWORK_WINDOW_TAG),
-		thewidth = w.innerWidth|| e.clientWidth || g.clientWidth,
-		theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
-
+		
 	var n = 6;
 	var r = 5;
-    var trans=[0,0]
-    var scale=1;
+	    var trans=[0,0]
+	    var scale=1;
+	var width = $(NETWORK_WINDOW_TAG).width(),
+	    height = $(NETWORK_WINDOW_TAG).height();
 	var color = d3.scale.category20();	
 	var previousd;
 	var counter=0;
 	
 	var vis = d3.select(NETWORK_WINDOW_TAG)
 		.append("svg")
-		.attr("id", "playgraph")
-		// .attr({
-		// 	"width": thewidth,
-		// 	"height": theheight
-		// })
-		.attr("viewBox", "0 0 " + thewidth + " " + theheight)
-		.attr("preserveAspectRatio", "xMidYMid meet")
-		.attr("pointer-events", "all")
-		.append('svg:g')
-		.call(d3.behavior.zoom().on("zoom", redraw))
-		.append('svg:g')
+	        	.attr("id", "playgraph")
+	        .attr({
+	          "width": width,
+	          "height": height
+	        })
+	        	.attr("viewBox", "0 0 " + width + " " + height )
+	        	.attr("preserveAspectRatio", "xMidYMid meet")
+		    .attr("pointer-events", "all")
+	  	 .append('svg:g')
+	 	    	.call(d3.behavior.zoom().on("zoom", redraw))
+	  	 .append('svg:g')
 		 
 	
-	var rect = vis.append('svg:rect')
-		.attr('width', thewidth)
-		.attr('height', theheight)
-		.attr('fill', 'white')
-		.on("click", function(){$(".pop-up").fadeOut(50);previousd=""});	
+	 	var rect = vis.append('svg:rect')
+	 	    .attr('width', width)
+	 	    .attr('height', height)
+	 	    .attr('fill', 'white')
+		.on("click", function(){$(".pop-up").fadeOut(50);previousd=""});
 	
-	function redraw(){
-		$(".pop-up").fadeOut(50);
+	function redraw() {
+	        $(".pop-up").fadeOut(50);
 		previousd="";
 		trans=d3.event.translate;
 		scale=d3.event.scale;
-
+	
 		vis.attr("transform","translate(" + trans + ")"+" scale(" + scale + ")");
 	}
-	
-	function updateWindow(){
-		thewidth = w.innerWidth || e.clientWidth || g.clientWidth;
-		theheight = w.innerHeight || e.clientHeight|| g.clientHeight;
-		vis.attr("width", thewidth).attr("height", theheight);
-		rect.attr("width", thewidth).attr("height", theheight);
-	}
-	
-	$(window).on("resize", function() {updateWindow()}).trigger("resize");
 	
 	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
 		
@@ -72,9 +62,9 @@
 	        // .linkDistance(30)
 			.links(graph.links)
 			.nodes(graph.nodes)
-		    .size([thewidth, theheight])
-			
-		var link = vis.selectAll(".link")
+		    .size([width, height]);
+	  	      	//.start();	
+		var link = vis.selectAll("line.link")
 	        .data(graph.links)
 	        .enter().append("svg:line")
 	      	.style("stroke-width", function(d) { return d.accumulated+1; })
@@ -91,10 +81,10 @@
 		}
 	
 		function dragmove(d, i) {
-	        d.px += d3.event.dx;
-	        d.py += d3.event.dy;
-	        d.x += d3.event.dx;
-	        d.y += d3.event.dy; 
+		    d.px += d3.event.dx;
+		    d.py += d3.event.dy;
+		    d.x += d3.event.dx;
+		    d.y += d3.event.dy; 
 		    tick(); // this is the key to make it work together with updating both px,py,x,y on d !
 		}
 	
@@ -126,21 +116,39 @@
 	  	  node.append("title")
 	  	      .text(function(d) { return d.main; });
 		
-		// force.on("tick", tick);
-		// force.start();
+		force.on("tick", tick);
+		force.on("start", loading);
 		
-		function tick() {
-		  link.attr("x1", function(d) { return d.source.x; })
-		      .attr("y1", function(d) { return d.source.y; })
-		      .attr("x2", function(d) { return d.target.x; })
-		      .attr("y2", function(d) { return d.target.y; });
-			
-			
-			gnodes.attr("transform", function(d) {
-				return "translate(" + d.x + "," + d.y + ")";
-			});			  
+		
+		function loading(){
+			var interval;
+			interval = setInterval(function() {
+				console.log(counter);
+				force.tick();
+				$('.progress-bar').attr('aria-valuetransitiongoal', counter).progressbar();
+				counter++;
+				if((counter-1) == (n*n)){
+					clearInterval(interval);
+					console.log("end");
+					$("#loadingCon").fadeOut();
+			  		force.stop();
+				}
+			}, 20);
 		}
-					
+		
+		function tick(){
+	  		  // Update the links
+	  		  link.attr("x1", function(d) { return d.source.x; })
+	  		    .attr("y1", function(d) { return d.source.y; })
+	  		    .attr("x2", function(d) { return d.target.x; })
+	  		    .attr("y2", function(d) { return d.target.y; });
+								
+	  		  // Translate the groups
+	  		  gnodes.attr("transform", function(d) { 
+	  		    return 'translate(' + [d.x, d.y] + ')'; 
+				});				
+		}
+		
 	    function mover(d,i) {
 	        $(".pop-up").fadeOut(50);
 			if(d.name != previousd){
@@ -234,37 +242,67 @@
 			}
 	    }		
 		
-		// Use a timeout to allow the rest of the page to load first.
-		setTimeout(function() {
- 
-		  // Run the layout a fixed number of times.
-		  // The ideal number of times scales with graph complexity.
-		  // Of course, don't run too long—you'll hang the page!
-		   
-		  vis.selectAll("line")
-		      .attr("x1", function(d) { return d.source.x; })
-		      .attr("y1", function(d) { return d.source.y; })
-		      .attr("x2", function(d) { return d.target.x; })
-		      .attr("y2", function(d) { return d.target.y; });
- 			 
-  			gnodes.attr("transform", function(d) { 
-  				return 'translate(' + [d.x, d.y] + ')'; 
-  			});
-			
-			force.start();
-			tick();
-			force.stop() // stops the force auto positioning before you start dragging
-		  
-			$("#loadingCon").fadeOut();
-			
-		  // svg.selectAll("circle")
-		  //     .data(nodes)
-		  //   .enter().append("circle")
-		  //     .attr("cx", function(d) { return d.x; })
-		  //     .attr("cy", function(d) { return d.y; })
-		  //     .attr("r", 4.5); 
-		}, 10);
+	  	setTimeout(function() {
+	  		  // Run the layout a fixed number of times.
+	  		  // The ideal number of times scales with graph complexity.
+	  		  // Of course, don't run too long—you'll hang the page!
+  			  force.start();
+			  
+			  force.loading();
+				// 			  for(counter=0;counter <= (n*n);counter++){
+				// force.tick();
+				// console.log(counter);
+				//   
+				//   (function(force){
+				// 	  setTimeout(function(){
+				// 	},5000)
+				//   }(force))
+				// 			  }
+				// 	  	  	$('.progress-bar').attr('aria-valuetransitiongoal', counter).progressbar();
+			  // 
+			  // 					  
+			  // }
+			  
+			  // (function(){
+			  // 				  var interval;
+			  // 				  interval = setInterval(function() {
+			  // 				  				  console.log(counter);
+			  // 				  				  force.tick();
+			  // 				                    $('.progress-bar').attr('aria-valuetransitiongoal', counter).progressbar();
+			  // 				  				  counter++;
+			  // 				  				  if((counter-1) == (n*n)){
+			  // 				  					  clearInterval(interval);
+			  // 				  					  $("#loadingCon").fadeOut();
+			  // 				  				  }
+			  // 				  }, 500);
+			  // }(force))
+			   
+			  				  
+			  // (function asyncLoop() {
+			  // 				  counter++;
+			  // 				  force.tick();
+			  //     if (counter <= (n*n)) {
+			  // 					  console.log(counter);
+			  //         asyncLoop();
+			  //     }
+			  // })();
+	  		  // for (var i = n * n; i > 0; --i) force.tick();
+	  		force.stop();
+			   
+	  		  vis.selectAll("line")
+	  		      .data(link)
+	  		    .enter().append("line")
+	  		      .attr("x1", function(d) { return d.source.x; })
+	  		      .attr("y1", function(d) { return d.source.y; })
+	  		      .attr("x2", function(d) { return d.target.x; })
+	  		      .attr("y2", function(d) { return d.target.y; });
+	  		  vis.selectAll("circle")
+	  		      .data(node)
+	  		    .enter().append("circle")
+	  		      .attr("cx", function(d) { return d.x; })
+	  		      .attr("cy", function(d) { return d.y; })
+	  		}, 10);
 	});
 	
-// }).call(this);
+}).call(this);
 
