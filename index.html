@@ -7,6 +7,7 @@
 	    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css" media="screen">
 	    <link rel="stylesheet" href="css/font-awesome.min.css">
 	    <link rel="stylesheet" href="css/bootswatch.min.css">
+	    <link rel="stylesheet" href="css/typeahead.js-bootstrap.css">
 	    <link rel="stylesheet" href="css/graph.css">
 	    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	    <!--[if lt IE 9]>
@@ -14,12 +15,14 @@
 	      <script src="../bower_components/bootstrap/assets/js/respond.min.js"></script>
 	    <![endif]-->
 	    <script src="js/jquery.min.js"></script>
+	    <script src="js/sizzle.min.js"></script>
 	    <script src="js/bootstrap-progressbar.min.js"></script>
 		<script src="js/arbor.js"></script>	
 		<style>
 			.node {
 			  stroke: #fff;
 			  stroke-width: 1.5px;
+			  cursor:pointer;
 			}
 
 			.link {
@@ -35,14 +38,33 @@
   				width:100%;
 				display:table;
 			}
+			.node.highlighted {
+			  fill: #f00;
+			}
+			
 		</style>
 	</head>
 	<body>
 		<div class="navbar navbar-default navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
 					<a href="./index.html" class="navbar-brand">CoLiEvolution Network</a>
 				</div>
+		        <div class="col-xs-7 col-sm-5 pull-right">
+		          <form class="navbar-form" role="search">
+		            <div class="input-group">						
+		              <input type="text" class="form-control" placeholder="Search" autocomplete="off" data-provide="typeahead" name="srch-term" id="srch-term">
+		              <div class="input-group-btn">
+		                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+		              </div>
+		            </div>
+		          </form>
+		        </div>				
 			</div>
 		</div>		
 		<div class="cntainr" id="loadingCon">
@@ -134,10 +156,11 @@
 		          </div>
 		      </div>
 		</div>
-		
 	    <script src="bootstrap/dist/js/bootstrap.min.js"></script>
 	    <script src="js/bootswatch.js"></script>
 		<script src="js/d3.v3.js"></script>
+	    <script src="js/typeahead.min.js"></script>
+	 	<script src="js/hogan-2.0.0.js"></script>
 		<script src="js/draw_graph.js"></script>
 	</body>
 </html>
