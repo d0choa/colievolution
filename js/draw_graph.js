@@ -123,6 +123,8 @@
 			vis.transition()
 				.duration(1000)
 				.attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
+			trans=zoom.translate();
+			scale=zoom.scale();		
 		}
 	}
 	
