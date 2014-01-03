@@ -112,16 +112,18 @@
 	}
 	
 	function focusOnNode(nodeName){
-		d3.selectAll('.node[main^='+nodeName+']').attr("transform",
-			function(d) {
-				// trans=[Math.abs(d.x)*scale,Math.abs(d.y)*scale];
-				trans=[d.x*scale,d.y*scale];
-				zoom.translate([thewidth/2 - trans[0] - (thewidth/2 - centerx),theheight/2 - trans[1] - (theheight/2 - centery)])
-				zoom.scale(scale);
-		})
-		vis.transition()
-			.duration(1000)
-			.attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
+		if(d3.selectAll('.node[main^='+nodeName+']').data().length == 1){
+			d3.selectAll('.node[main^='+nodeName+']').attr("transform",
+				function(d) {
+					// trans=[Math.abs(d.x)*scale,Math.abs(d.y)*scale];
+					trans=[d.x*scale,d.y*scale];
+					zoom.translate([thewidth/2 - trans[0] - (thewidth/2 - centerx),theheight/2 - trans[1] - (theheight/2 - centery)])
+					zoom.scale(scale);
+			})
+			vis.transition()
+				.duration(1000)
+				.attr("transform","translate(" + [thewidth/2 - trans[0],theheight/2 - trans[1]] + ")"+" scale(" + scale + ")");
+		}
 	}
 	
 	d3.json(NETWORK_LOCAL_DATA_URI, function(error, graph) {
