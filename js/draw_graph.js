@@ -113,6 +113,7 @@
 	
 	function focusOnNode(nodeName){
 		if(d3.selectAll('.node[main^='+nodeName+']').data().length == 1){
+	        $(".pop-up").fadeOut(50);
 			d3.selectAll('.node[main^='+nodeName+']').attr("transform",
 				function(d) {
 					// trans=[Math.abs(d.x)*scale,Math.abs(d.y)*scale];
